@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f4eee3" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="AngleBlock: claim the grid, meet only at the corners. A four-color tile strategy game. Offline, no ads." />
+  <link rel="icon" href="./icon.svg" />
+  <title>AngleBlock</title>
+  <script type="module" crossorigin src="./assets/index-C6QRETnd.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/dist-Z0lPoSvM.js">
+  <link rel="modulepreload" crossorigin href="./assets/definitions-BdWVgBTV.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-BgEnUlXx.css">
+</head>
+<body>
+  <main id="app">
+    <!-- HOME -->
+    <section id="home" class="screen active" aria-labelledby="home-title">
+      <header class="home-head">
+        <div class="logo" aria-hidden="true"><i class="e"></i><i class="t"></i><i class="f"></i><i class="i"></i></div>
+        <h1 id="home-title">AngleBlock</h1>
+        <p class="tag">Claim the grid. Meet only at the corners.</p>
+      </header>
+
+      <button id="resume" class="card resume" hidden><span class="card-kicker">Match in progress</span><span class="card-title" id="resume-label">Resume</span><span class="chev" aria-hidden="true">›</span></button>
+
+      <div class="card play-card">
+        <div class="card-row">
+          <div>
+            <span class="card-kicker">Field</span>
+            <h2 class="card-title">You vs three rivals</h2>
+          </div>
+          <span class="record" id="field-record"></span>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Rival strength" id="level-seg">
+          <button role="radio" data-level="easy">Easy</button>
+          <button role="radio" data-level="normal">Normal</button>
+          <button role="radio" data-level="hard">Hard</button>
+        </div>
+        <div class="seg seg-small" role="radiogroup" aria-label="Board" id="board-seg">
+          <button role="radio" data-board="open">Open board</button>
+          <button role="radio" data-board="quarry">Quarry stones</button>
+        </div>
+        <button id="play" class="btn primary big">Play</button>
+      </div>
+
+      <button id="daily" class="card daily-card">
+        <span class="card-kicker">Daily Quarry · <span id="daily-date"></span></span>
+        <span class="card-title" id="daily-title">Same stones for everyone. Three hard rivals.</span>
+        <span class="daily-meta" id="daily-meta"></span>
+        <span class="chev" aria-hidden="true">›</span>
+      </button>
+
+      <div class="card hot-card">
+        <div class="card-row">
+          <div>
+            <span class="card-kicker">Hotseat</span>
+            <h2 class="card-title">Pass one phone around</h2>
+          </div>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Players" id="players-seg">
+          <button role="radio" data-players="2">2 players</button>
+          <button role="radio" data-players="3">3 players</button>
+          <button role="radio" data-players="4">4 players</button>
+        </div>
+        <p class="fine" id="players-note"></p>
+        <button id="hotseat" class="btn secondary">Start hotseat</button>
+      </div>
+
+      <nav class="home-nav" aria-label="More">
+        <button id="open-learn" class="nav-btn"><span class="ico" data-icon="learn"></span>Learn</button>
+        <button id="open-stats" class="nav-btn"><span class="ico" data-icon="stats"></span>Stats</button>
+        <button id="open-settings" class="nav-btn"><span class="ico" data-icon="settings"></span>Settings</button>
+      </nav>
+    </section>
+
+    <!-- GAME -->
+    <section id="game" class="screen" aria-label="Match">
+      <header class="topbar">
+        <button id="menu" class="icon-btn" aria-label="Pause menu"><span class="ico" data-icon="menu"></span></button>
+        <div id="turn" class="turn-pill" aria-live="polite"><i id="turn-dot"></i><span id="turn-text">Your move</span></div>
+        <button id="undo" class="icon-btn" aria-label="Undo"><span class="ico" data-icon="undo"></span></button>
+        <button id="hint" class="icon-btn" aria-label="Hint"><span class="ico" data-icon="hint"></span></button>
+      </header>
+      <div id="chips" class="chips"></div>
+      <div id="coach" class="coach" hidden role="region" aria-label="Tutorial">
+        <div class="coach-dots" id="coach-dots" aria-hidden="true"></div>
+        <p id="coach-text"></p>
+        <div class="coach-actions"><button id="coach-skip" class="link">Skip tutorial</button><button id="coach-next" class="btn small primary" hidden>Got it</button></div>
+      </div>
+      <div class="board-wrap" id="board-wrap">
+        <canvas id="board" role="img" aria-label="Game board"></canvas>
+        <div id="banner" class="banner" aria-hidden="true"></div>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+      <div class="controls" id="controls">
+        <button id="rot-ccw" class="ctl" aria-label="Turn left"><span class="ico" data-icon="ccw"></span></button>
+        <button id="rot-cw" class="ctl" aria-label="Turn right"><span class="ico" data-icon="cw"></span></button>
+        <button id="flip" class="ctl" aria-label="Flip"><span class="ico" data-icon="flip"></span></button>
+        <button id="spot" class="ctl" aria-label="Next legal spot"><span class="ico" data-icon="spot"></span></button>
+        <button id="place" class="btn primary place" aria-label="Place tile">Place</button>
+      </div>
+      <div id="tray" class="tray" role="group" aria-label="Your tiles"></div>
+      <div id="finish-row" class="finish-row" hidden><p id="finish-text">You are out of moves.</p><button id="skip-end" class="btn primary small">Finish the match</button></div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="screen" aria-labelledby="res-title">
+      <div class="res-top">
+        <p class="card-kicker" id="res-kicker">Match over</p>
+        <h1 id="res-title">You win</h1>
+        <p id="res-sub" class="res-sub"></p>
+      </div>
+      <canvas id="res-board" class="res-board" role="img" aria-label="Final board"></canvas>
+      <ol id="res-rows" class="res-rows"></ol>
+      <div id="res-unlocks" class="unlocks"></div>
+      <div class="res-actions">
+        <button id="again" class="btn primary big">Play again</button>
+        <button id="res-home" class="btn secondary">Menu</button>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section id="stats" class="screen page" aria-labelledby="stats-title">
+      <header class="page-head"><button class="icon-btn back" aria-label="Back" data-back><span class="ico" data-icon="back"></span></button><h1 id="stats-title">Stats</h1></header>
+      <div id="stats-body" class="page-body"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="screen page" aria-labelledby="settings-title">
+      <header class="page-head"><button class="icon-btn back" aria-label="Back" data-back><span class="ico" data-icon="back"></span></button><h1 id="settings-title">Settings</h1></header>
+      <div class="page-body">
+        <div class="group">
+          <label class="row"><span>Sound</span><input type="checkbox" id="set-sound" /></label>
+          <label class="row"><span>Haptics</span><input type="checkbox" id="set-haptics" /></label>
+          <label class="row"><span>Reduce motion</span><input type="checkbox" id="set-motion" /></label>
+        </div>
+        <div class="group">
+          <label class="row"><span>Show reachable corners<small>Dots mark where your next tile can touch. Tiles that fit nowhere are dimmed.</small></span><input type="checkbox" id="set-hints" /></label>
+          <label class="row"><span>Place on release<small>Drop a tile on a legal spot to place it at once.</small></span><input type="checkbox" id="set-release" /></label>
+          <label class="row"><span>Color marks<small>Adds a symbol to each color for easier telling apart.</small></span><input type="checkbox" id="set-marks" /></label>
+        </div>
+        <div class="group">
+          <div class="row col"><span>Appearance</span>
+            <div class="seg" role="radiogroup" aria-label="Appearance" id="theme-seg"><button role="radio" data-theme="system">System</button><button role="radio" data-theme="light">Light</button><button role="radio" data-theme="dark">Dark</button></div>
+          </div>
+          <div class="row col"><span>Rival speed</span>
+            <div class="seg" role="radiogroup" aria-label="Rival speed" id="speed-seg"><button role="radio" data-speed="relaxed">Relaxed</button><button role="radio" data-speed="normal">Normal</button><button role="radio" data-speed="quick">Quick</button></div>
+          </div>
+        </div>
+        <div class="group">
+          <button class="row link-row" id="open-rules">How to play<span class="chev">›</span></button>
+          <button class="row link-row danger" id="reset">Reset stats and achievements</button>
+        </div>
+        <p class="fine center">AngleBlock <span id="version">1.0.0</span>. Works offline. No ads, accounts or tracking.<br />Your stats stay on this device.</p>
+      </div>
+    </section>
+
+    <!-- RULES -->
+    <section id="rules" class="screen page" aria-labelledby="rules-title">
+      <header class="page-head"><button class="icon-btn back" aria-label="Back" data-back><span class="ico" data-icon="back"></span></button><h1 id="rules-title">How to play</h1></header>
+      <div class="page-body prose">
+        <p class="lead">Four colors share a 20 × 20 grid. Each holds the same 21 tiles, from a single square to every five-square shape: 89 squares in all.</p>
+        <h2>Start</h2>
+        <p>Ember, Tide, Iris and Flint each own a corner. Your first tile must cover your corner.</p>
+        <h2>Grow</h2>
+        <p>Every new tile must touch one of your own tiles <b>corner to corner</b>, and may <b>never share a side</b> with your own color. Other colors may sit against your sides, so you can wall rivals off.</p>
+        <h2>Finish</h2>
+        <p>When you have no legal tile left, you are out. When every color is out, each square still in your tray costs 1 point. Place all 21 tiles for +15, or +20 if the single square goes last. Highest score wins.</p>
+        <h2>Controls</h2>
+        <p>Drag a tile from the tray onto the board. The ghost turns green where it fits and red where it does not. Tap the selected tile or the board ghost to turn it, use Flip to mirror it, then tap Place. The spot button jumps through every legal position. On a keyboard: arrows move, R turns, F flips, Enter places.</p>
+        <h2>Modes</h2>
+        <p><b>Field</b> puts you against three on-device rivals: Easy, Normal or Hard. <b>Quarry</b> scatters stones that nobody can cover. <b>Daily Quarry</b> gives everyone the same stones each day. <b>Hotseat</b> passes one phone between 2 to 4 players; with two players each controls two colors.</p>
+        <button id="rules-learn" class="btn secondary">Play the tutorial</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="pause" aria-labelledby="pause-title">
+    <h2 id="pause-title" tabindex="-1" autofocus>Paused</h2>
+    <p id="pause-sub" class="fine"></p>
+    <button id="pause-resume" class="btn primary">Resume</button>
+    <button id="pause-restart" class="btn secondary">Restart match</button>
+    <button id="pause-rules" class="btn secondary">How to play</button>
+    <button id="pause-quit" class="btn ghost">Save and quit to menu</button>
+  </dialog>
+
+  <dialog id="confirm" aria-labelledby="confirm-title">
+    <h2 id="confirm-title" tabindex="-1" autofocus>Are you sure?</h2>
+    <p id="confirm-text" class="fine"></p>
+    <button id="confirm-yes" class="btn danger-btn">Yes</button>
+    <button id="confirm-no" class="btn secondary">Cancel</button>
+  </dialog>
+
+  <dialog id="welcome" aria-labelledby="welcome-title">
+    <div class="logo big" aria-hidden="true"><i class="e"></i><i class="t"></i><i class="f"></i><i class="i"></i></div>
+    <h2 id="welcome-title" tabindex="-1" autofocus>Welcome to AngleBlock</h2>
+    <p class="fine">A one-minute tutorial shows the only rule that matters: your tiles meet at corners, never at sides.</p>
+    <button id="welcome-learn" class="btn primary">Show me</button>
+    <button id="welcome-skip" class="btn ghost">I know how to play</button>
+  </dialog>
+
+  <div id="drag-chip" class="drag-chip" aria-hidden="true"></div>
+</body>
+</html>
